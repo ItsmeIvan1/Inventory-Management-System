@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\tbl_users;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
@@ -30,33 +33,56 @@ class UserController extends Controller
         $password       = $request->password;
         $retypepassword = $request->retypepassword;
 
-        $data = DB::table('tbl_users')->insert([
-            'first_name'          => $firstname,
-            'middle_name'         => $middlename,
-            'last_name'           => $lastname,
-            'suffix'              => $suffix,
-            'age'                 => $age,
-            'email'               => $email,
-            'user_name'           => $username,
-            'password'            => sha1($password),
-            're_type_password'    => sha1($retypepassword),
-            'created_at'          => date('Y-m-d')
-        ]);
+        $dataInput = array (
+            $firstname,
+            $middlename,
+            $lastname,
+            $age,
+            $email,
+            $username,
+            $password,
+            $retypepassword
+        );
 
-        if($data)
+        if(in_array('', $dataInput))
         {
             return response()->JSON([
-                'status'    => 'success',
-                'message'   => 'Successfully created!'
+                'status'    => 'empty',
+                 'message'  => 'Please input all required fields'
             ]);
         }
 
         else
         {
-            return response()->JSON([
-                'message'   => 'Error!'
+            $data = DB::table('tbl_users')->insert([
+                'first_name'          => $firstname,
+                'middle_name'         => $middlename,
+                'last_name'           => $lastname,
+                'suffix'              => $suffix,
+                'age'                 => $age,
+                'email'               => $email,
+                'user_name'           => $username,
+                'password'            => sha1($password),
+                're_type_password'    => sha1($retypepassword),
+                'created_at'          => date('Y-m-d')
             ]);
+    
+            if($data)
+            {
+                return response()->JSON([
+                    'status'    => 'success',
+                    'message'   => 'Successfully created!'
+                ]);
+            }
+    
+            else
+            {
+                return response()->JSON([
+                    'message'   => 'Error!'
+                ]);
+            }
         }
+
     }
 
     public function checkEmailInDB(Request $request)
@@ -88,5 +114,79 @@ class UserController extends Controller
                 'message'   => ''
             ]);
         }
+    }
+
+    public function login(Request $request)
+    {
+        $user_name = $request->user_name;
+        $password = sha1($request->password);
+
+
+        $checkInDB = DB::table('tbl_users')
+        ->where('user_name', $user_name)
+        ->where('password', $password)
+        ->first();
+
+        if($checkInDB)
+        {
+                $loginResult = Auth::loginUsingId($checkInDB->user_id);
+
+                if($loginResult)
+                {
+                    // Store the username in the session
+                    session(['user_name' => $user_name]);
+
+                    return response()->JSON([
+                        'status'    => 'success',
+                        'user_name' => $user_name,
+                    ]);  
+                }
+
+                else
+                {   
+                    return response()->JSON([
+                        'message' => 'Authentication failed'
+                    ]);
+                }  
+        }
+
+        else
+        {
+            return response()->JSON([
+                'message'   => 'Incorrect username or password'
+            ]);
+
+        }
+    }
+
+    public function indexAfterLogin()
+    {
+
+        if (Auth::check()) {
+
+            return view('Index');
+        } 
+        else 
+        {
+            return view('Login');
+            
+        } 
+
+     
+    }
+
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        // Clear all session data
+        session()->flush();
+        // Regenerate the session ID to prevent session fixation attacks
+        session()->invalidate();
+
+        session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

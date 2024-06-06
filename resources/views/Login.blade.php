@@ -11,7 +11,8 @@
                 <div class="content">
         
                     <!-- Login form -->
-                    <form class="login-form" action="">
+                    <form class="login-form" id="LoginForm">
+                        @csrf
                         <div class="panel panel-body card mb-0">
                             <div class="card-body">
                                 <div class="text-center mb-3">
@@ -21,21 +22,21 @@
                                 </div>
         
                                 <div class="form-group form-group-feedback form-group-feedback-left">
-                                    <input type="text" class="form-control" placeholder="Username">
+                                    <input type="text" class="form-control" name="user_name" id="username" placeholder="Username">
                                     <div class="form-control-feedback">
                                         <i class="icon-user text-muted"></i>
                                     </div>
                                 </div>
         
                                 <div class="form-group form-group-feedback form-group-feedback-left">
-                                    <input type="password" class="form-control" placeholder="Password">
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Password">
                                     <div class="form-control-feedback">
                                         <i class="icon-lock2 text-muted"></i>
                                     </div>
                                 </div>
         
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-block">Sign in <i class="icon-circle-right2 ml-2"></i></button>
+                                    <button type="button" id="btnSignIn" class="btn btn-primary btn-block">Sign in <i class="icon-circle-right2 ml-2"></i></button>
                                 </div>
         
                                 <div class="text-center">
@@ -67,6 +68,60 @@
 }
 
 </style>
+
+<script>
+
+    
+
+    $(document).ready(function(){
+
+        var headers = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
+
+
+        $('#btnSignIn').click(function(){
+
+            var formData = $('#LoginForm').serialize();
+        
+            $.ajax({
+            type: 'POST',
+            url: "{{ route('clickLogin') }}",
+            data: formData,
+            success: function(response) {
+
+
+                if(response.status == 'success')
+                {
+                    console.log("Login successful");
+
+                    window.location.href = "{{ route('index') }}";
+                }
+
+                else
+                {
+                    swal({
+                    title: "Error",
+                    text: response.message,
+                    type: "error",
+                    closeOnClickOutside: false
+                    });
+                }
+
+
+            },
+
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+            });
+        })
+
+    });
+
+
+
+
+
+</script>
    
 </body>
 

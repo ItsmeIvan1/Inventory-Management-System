@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
+
 Route::get('/', [UserController::class, 'index'])->name('login');
 
 Route::get('/create-account', [UserController::class, 'createAccount'])->name('create-account');
@@ -21,3 +22,9 @@ Route::get('/create-account', [UserController::class, 'createAccount'])->name('c
 Route::post('/create', [UserController::class, 'insertUserAccount'])->name('create');
 
 Route::post('/email-checker', [UserController::class, 'checkEmailInDB'])->name('findEmail');
+
+Route::post('/clickLogin', [UserController:: class, 'login'])->name('clickLogin');
+
+Route::get('/index', [UserController:: class, 'indexAfterLogin'])->middleware('auth')->name('index');
+
+Route::post('/logout', [UserController:: class, 'logout'])->name('logout');

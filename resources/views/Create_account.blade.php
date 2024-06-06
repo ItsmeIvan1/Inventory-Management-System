@@ -159,27 +159,40 @@
                 // headers: headers,
                 success: function(response) {
 
-                    if(response.status == 'success')
+                    if(response.status == 'empty')
                     {
-                        console.log(response.message);
-
                         swal({
-                        title: "Success",
+                        title: "Error",
                         text: response.message,
-                        type: "success",
+                        type: "error",
                         closeOnClickOutside: false
                         });
-
-                        $('#createForm input[type="text"]').val('');
-                        $('#createForm input[type="password"]').val('');
-                        $('#createForm input[type="email"]').val('');
-                        $('#createForm select').val('');
                     }
 
                     else
                     {
-                        console.log(response.message)
+                        if(response.status == 'success')
+                        {
+                            console.log(response.message);
 
+                            swal({
+                            title: "Success",
+                            text: response.message,
+                            type: "success",
+                            closeOnClickOutside: false
+                            });
+
+                            $('#createForm input[type="text"]').val('');
+                            $('#createForm input[type="password"]').val('');
+                            $('#createForm input[type="email"]').val('');
+                            $('#createForm select').val('');
+                        }
+
+                        else
+                        {
+                            console.log(response.message)
+
+                        }
                     }
 
 
