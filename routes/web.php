@@ -36,4 +36,7 @@ Route::get('/Supplier', [SupplierController:: class, 'index'])->name('index_supp
 //Supplier insert
 Route::post('/create-supplier', [SupplierController:: class, 'storeSupplier'])->name('create-supplier');
 
+//capture the supplier
+Route::post('/capture-supplier/{id}', [SupplierController:: class, 'captureSupplierInModal'])->name('capture');
+
 

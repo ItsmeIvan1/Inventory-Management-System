@@ -86,6 +86,15 @@ class SupplierController extends Controller
 
 
     }
+    
+    public function captureSupplierInModal($supplier_id)
+    {
+        $query = DB::table('tbl_suppliers')
+                     ->where('supplier_id', $supplier_id)
+                     ->first();
+        
+        return response()->JSON($query);
+    }
 
 
 }

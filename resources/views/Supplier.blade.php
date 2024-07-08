@@ -163,6 +163,53 @@
         </div>
     </div>
     <!-- /vertical form modal -->
+
+    <div id="modal_form_vertical_update" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Supplier</h5>
+                </div>
+
+                <form id="addSupplierForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>Supplier Name<span style="color: red;">*</span></label>
+                                    <input type="text" name="supplierName" id="updateSupplierName"  class="form-control">
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label>Supplier Address<span style="color: red;">*</span></label>
+                                    <input type="text" name="supplierAddress" id="updateSupplierAddress" class="form-control">
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label>Phone<span style="color: red;">*</span></label>
+                                    <input type="text" name="supplierPhone" id="updateSupplierPhone" class="form-control">
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label>Email<span style="color: red;">*</span></label>
+                                    <input type="email" name="supplierEmail" id="updateSupplierEmail"  class="form-control">
+                                </div>
+
+        
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                        <button type="button" id="updateSupplier" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     
 </div>
@@ -172,6 +219,8 @@
 <script>
 
     $('#li1').addClass('active');
+
+    var headers = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
 
     // $('.datatable-basic').DataTable();
 
@@ -190,7 +239,7 @@
             render: function(data, type, row) {
                 var dropdownHtml = '';
 
-                    dropdownHtml += '<button type="button" class="btn btn-primary" data-toggle="" data-target=""><i class="icon-pencil4"></i>Update</button>'
+                    dropdownHtml += '<button type="button" class="btn btn-primary" onclick="fetchSupplier(' + row.supplier_id + ')" data-toggle="modal" data-target="#modal_form_vertical_update"><i class="icon-pencil4"></i>Update</button>'
                 
                 if (row.status_name == 'Active') {
                     dropdownHtml += '<button type="button" class="btn btn-danger" onclick="disableSupplier(' + row.supplier_id + ')"><i class="icon-user-block"></i> Disable</button>';
@@ -207,7 +256,7 @@
             }
         ],
 
-        order: [[0, 'desc']]
+        order: [[0, 'asc']]
     });
 
 
@@ -215,7 +264,7 @@
 
         const formSupplier = $('#addSupplierForm').serialize();
 
-        var headers = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
+       
 
         var supplierName = $('#supplierName');
         var supplierAddress = $('#supplierAddress');
@@ -264,9 +313,39 @@
             console.error(error);
         }
     });
-  
 
     })
+
+    function fetchSupplier(id) {
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+
+
+        const updateSupplierName = $('#updateSupplierName');
+        const updateSupplierAddress = $('#updateSupplierAddress');
+        const updateSupplierPhone = $('#updateSupplierPhone');
+        const updateSupplierEmail = $('#updateSupplierEmail');
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ url('/capture-supplier') }}/" + id,
+            success: function(response) {
+                updateSupplierName.val(response.name);
+                updateSupplierAddress.val(response.address);
+                updateSupplierPhone.val(response.contact_no);
+                updateSupplierEmail.val(response.email);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+}
+
 
 </script>
 
