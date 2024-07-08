@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +29,11 @@ Route::post('/clickLogin', [UserController:: class, 'login'])->name('clickLogin'
 Route::get('/index', [UserController:: class, 'indexAfterLogin'])->middleware('auth')->name('index');
 
 Route::post('/logout', [UserController:: class, 'logout'])->name('logout');
+
+// Supplier
+Route::get('/Supplier', [SupplierController:: class, 'index'])->name('index_supplier');
+
+//Supplier insert
+Route::post('/create-supplier', [SupplierController:: class, 'storeSupplier'])->name('create-supplier');
+
+

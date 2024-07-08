@@ -4,7 +4,7 @@
 			<a class="navbar-brand" href="#">
 				<div style="flex">
 					<img src="" class="img-circle" alt="" style="width: 30px;">
-					<span style="font-weight: bold;">Telegraphic Transfer System</span>
+					<span style="font-weight: bold;">Inventory Management System</span>
 					
 				</div>
 
@@ -31,7 +31,7 @@
 						
                         @if (session()->has('user_name'))
                             <span>Welcome, {{ session('user_name') }}!</span>
-                            <!-- Additional content for logged-in users -->
+                            
                         @else
                             
                         @endif
@@ -66,9 +66,6 @@
 
     <div class="page-container">
 
-        <!-- Page content -->
-        <div class="page-content">
-    
             <!-- Main sidebar -->
             <div class="sidebar sidebar-main">
                 <div class="sidebar-content">
@@ -83,8 +80,12 @@
                                 <li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
     
                             
-                                    <li id="0">
-                                        <a href=""><i class="icon-home"></i><span>Dashboard</span></a>
+                                    <li id="li0">
+                                        <a href="{{ route('index') }}"><i class="icon-home"></i><span>Dashboard</span></a>
+                                    </li>
+
+                                    <li id="li1">
+                                        <a href="{{ route('index_supplier') }}"><i class="icon-truck"></i><span>Supplier</span></a>
                                     </li>
                                 
                                     <li id="">
@@ -119,4 +120,4 @@
             </div>
             <!-- /main sidebar -->
 
-            <div class="content-wrapper">
+   
