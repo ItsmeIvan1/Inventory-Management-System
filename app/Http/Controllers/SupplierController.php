@@ -12,19 +12,33 @@ class SupplierController extends Controller
 {
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
-            $data = DB::table('tbl_suppliers')
-            ->join('tbl_status', 'tbl_suppliers.status', '=', 'tbl_status.id')
-            ->select('tbl_suppliers.*', 'tbl_status.status')
-            ->get();
-
-            return DataTables::of($data)
-            ->make(true);
+        if ($request->ajax()) {
+            $query = DB::table('tbl_suppliers')
+                ->join('tbl_status', 'tbl_suppliers.status', '=', 'tbl_status.id')
+                ->select('tbl_suppliers.*', 'tbl_status.status_name');
     
-           
+            return DataTables::of($query)
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && $request->search['value'] !== '') {
+                        $search = $request->search['value'];
+                        $query->where(function ($q) use ($search) {
+                            $q->where('tbl_suppliers.name', 'like', "%{$search}%")
+                                ->orWhere('tbl_suppliers.address', 'like', "%{$search}%")
+                                ->orWhere('tbl_suppliers.contact_no', 'like', "%{$search}%")
+                                ->orWhere('tbl_suppliers.email', 'like', "%{$search}%")
+                                ->orWhere('tbl_status.status_name', 'like', "%{$search}%");
+                        });
+                    }
+                })
+                ->make(true);
         }
+
         return view('Supplier');
+
+        // $data = DB::table('tbl_suppliers')
+        //         ->join('tbl_status', 'tbl_suppliers.status', '=', 'tbl_status.id')
+        //         ->select('tbl_suppliers.*', 'tbl_status.status_name')
+        //         ->get();
 
         // return view('Supplier', ['suppliers' => $data]);
     }

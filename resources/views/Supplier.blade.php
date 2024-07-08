@@ -50,7 +50,7 @@
                 <td>{{ $supplier->address }}</td>
                 <td>{{ $supplier->contact_no }}</td>
                 <td>{{ $supplier->email }}</td>
-                <td><span class="label label-success">{{ $supplier->status }}</span></td>
+                <td><span class="label label-success">{{ $supplier->status_name }}</span></td>
                 <td class="text-center">
                     <ul class="icons-list">
                         <li class="dropdown">
@@ -65,11 +65,11 @@
                                 
                                 @if( $supplier->status  == 1)
                                     <li>
-                                        <a onclick=""><i class="icon-user-block"></i>Disable</a></li>
+                                        <a onclick="DisabledSupplier({{ $supplier->supplier_id }})"><i class="icon-user-block"></i>Disable</a></li>
                                     </li>
                                 @else
                                     <li>
-                                        <a onclick=""><i class="icon-user-block"></i>Retrieved</a></li>
+                                        <a onclick="RetrievedSupplier({{ $supplier->supplier_id }})" ><i class="icon-user-block"></i>Retrieved</a></li>
                                     </li>
                                 @endif   
                             </ul>
@@ -173,8 +173,9 @@
 
     $('#li1').addClass('active');
 
-    $('.datatable-basic').dataTable({
+    // $('.datatable-basic').DataTable();
 
+    $('.datatable-basic').dataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ route('index_supplier') }}",
@@ -183,18 +184,32 @@
             { data: 'address', name: 'tbl_suppliers.address' },
             { data: 'contact_no', name: 'tbl_suppliers.contact_no' },
             { data: 'email', name: 'tbl_suppliers.email' },
-            { data: 'status', name: 'tbl_status.status' },
+            { data: 'status_name', name: 'tbl_status.id' },
             {
             data: null,
             render: function(data, type, row) {
-                return '<button class="btn btn-primary btn-sm" onclick="editSupplier(' + row.supplier_id + ')">Edit</button>';
+                var dropdownHtml = '';
+
+                    dropdownHtml += '<button type="button" class="btn btn-primary" data-toggle="" data-target=""><i class="icon-pencil4"></i>Update</button>'
+                
+                if (row.status_name == 'Active') {
+                    dropdownHtml += '<button type="button" class="btn btn-danger" onclick="disableSupplier(' + row.supplier_id + ')"><i class="icon-user-block"></i> Disable</button>';
+                } else {
+                    dropdownHtml += '<button type="button" class="btn btn-success" onclick="retrieveSupplier(' + row.supplier_id + ')"><i class="icon-user-block"></i> Retrieve</button>';
+                }
+                
+                dropdownHtml += '';
+                
+                return dropdownHtml;
             },
-            orderable: false, // Disable sorting on this column
-            searchable: false // Disable searching on this column
-        }
-        ]
-    
+            orderable: false,
+            searchable: false
+            }
+        ],
+
+        order: [[0, 'desc']]
     });
+
 
     $('#addSupplier').click(function(){
 
@@ -230,6 +245,8 @@
                 $('#modal_form_vertical').modal('hide');
 
                 $('.datatable-basic').DataTable().ajax.reload();
+
+     
             }
 
             else
