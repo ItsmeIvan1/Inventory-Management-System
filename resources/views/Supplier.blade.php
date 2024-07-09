@@ -172,29 +172,31 @@
                     <h5 class="modal-title">Supplier</h5>
                 </div>
 
-                <form id="addSupplierForm">
+                <form id="updateSupplierForm">
                     @csrf
+                    @method('PUT')
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
+                                <input type="hidden" name="supplierId" id="supplierId"  class="form-control">
                                 <div class="col-sm-12">
                                     <label>Supplier Name<span style="color: red;">*</span></label>
-                                    <input type="text" name="supplierName" id="updateSupplierName"  class="form-control">
+                                    <input type="text" name="updatesupplierName" id="updateSupplierName"   class="form-control">
                                 </div>
 
                                 <div class="col-sm-12">
                                     <label>Supplier Address<span style="color: red;">*</span></label>
-                                    <input type="text" name="supplierAddress" id="updateSupplierAddress" class="form-control">
+                                    <input type="text" name="updatesupplierAddress" id="updateSupplierAddress" class="form-control">
                                 </div>
 
                                 <div class="col-sm-12">
                                     <label>Phone<span style="color: red;">*</span></label>
-                                    <input type="text" name="supplierPhone" id="updateSupplierPhone" class="form-control">
+                                    <input type="text" name="updatesupplierPhone" id="updateSupplierPhone" class="form-control">
                                 </div>
 
                                 <div class="col-sm-12">
                                     <label>Email<span style="color: red;">*</span></label>
-                                    <input type="email" name="supplierEmail" id="updateSupplierEmail"  class="form-control">
+                                    <input type="email" name="updatesupplierEmail" id="updateSupplierEmail"  class="form-control">
                                 </div>
 
         
@@ -204,7 +206,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                        <button type="button" id="updateSupplier" class="btn btn-primary">Add</button>
+                        <button type="button" id="updateSupplier" class="btn btn-primary">Update</button>
                     </div>
                 </form>
             </div>
@@ -316,7 +318,8 @@
 
     })
 
-    function fetchSupplier(id) {
+    function fetchSupplier(id)
+    {
         
         $.ajaxSetup({
             headers: {
@@ -325,7 +328,7 @@
         });
 
 
-
+        const supplierId = $('#supplierId');
         const updateSupplierName = $('#updateSupplierName');
         const updateSupplierAddress = $('#updateSupplierAddress');
         const updateSupplierPhone = $('#updateSupplierPhone');
@@ -335,6 +338,8 @@
             type: 'POST',
             url: "{{ url('/capture-supplier') }}/" + id,
             success: function(response) {
+
+                supplierId.val(response.supplier_id);
                 updateSupplierName.val(response.name);
                 updateSupplierAddress.val(response.address);
                 updateSupplierPhone.val(response.contact_no);
@@ -344,7 +349,189 @@
                 console.error(error);
             }
         });
-}
+    }
+
+    $('#updateSupplier').click(function(){
+
+        const supplierId = $('#supplierId').val();
+        const updateSupplierName = $('#updateSupplierName').val();
+        const updateSupplierAddress = $('#updateSupplierAddress').val();
+        const updateSupplierPhone = $('#updateSupplierPhone').val();
+        const updateSupplierEmail = $('#updateSupplierEmail').val()
+
+        $.ajax({
+            type: 'PUT',
+            url: "{{ url('/update-supplier') }}/" + supplierId,
+            data: { updatesupplierName: updateSupplierName,
+                    updateSupplierAddress: updateSupplierAddress,
+                    updateSupplierPhone: updateSupplierPhone,
+                    updateSupplierEmail: updateSupplierEmail
+            },
+            success: function(response) {
+
+                if(response.status == 'success')
+                {
+                    swal({
+                    title: "Success",
+                    text: response.message,
+                    type: "success",
+                    closeOnClickOutside: false
+                    });
+
+                    $('#modal_form_vertical_update').modal('hide');
+
+                    $('.datatable-basic').DataTable().ajax.reload();
+                }
+
+                else
+                {
+                    swal({
+                    title: "Error",
+                    text: response.message,
+                    type: "error",
+                    closeOnClickOutside: false
+                    });
+                }
+
+                
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+
+
+    })
+
+    function disableSupplier(id)
+    {
+                swal({
+					title: "Are you sure?",
+					text: 'You want to disabled this Supplier?',
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#EF5350",
+					confirmButtonText: "Yes",
+					closeOnConfirm: false,
+					showCancelButton: true,
+				},
+				function(isConfirm){
+					if (isConfirm)
+					{
+
+                        $.ajax({
+                            type: 'PUT',
+                            url: "{{ url('/disabled-supplier-status') }}/" + id,
+                            headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                     },
+                            success: function(response) {
+
+                                if(response.status == 'success')
+                                {
+                                    swal({
+                                    title: "Success",
+                                    text: response.message,
+                                    type: "success",
+                                    closeOnClickOutside: false
+                                    });
+
+                                    $('#modal_form_vertical_update').modal('hide');
+
+                                    $('.datatable-basic').DataTable().ajax.reload();
+                                }
+
+                                else
+                                {
+                                    swal({
+                                    title: "Error",
+                                    text: response.message,
+                                    type: "error",
+                                    closeOnClickOutside: false
+                                    });
+                                }
+
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                            }
+                        });
+
+					}
+					
+					else 
+					{
+			
+					}
+				});
+    }
+
+    function retrieveSupplier(id)
+    {
+                swal({
+					title: "Are you sure?",
+					text: 'You want to retrieve this Supplier?',
+					type: "info",
+					showCancelButton: true,
+					confirmButtonColor: "#EF5350",
+					confirmButtonText: "Yes",
+					closeOnConfirm: false,
+					showCancelButton: true,
+				},
+				function(isConfirm){
+					if (isConfirm)
+					{
+
+                        $.ajax({
+                            type: 'PUT',
+                            url: "{{ url('/retrieved-supplier-status') }}/" + id,
+                            headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                     },
+                            success: function(response) {
+
+                                if(response.status == 'success')
+                                {
+                                    swal({
+                                    title: "Success",
+                                    text: response.message,
+                                    type: "success",
+                                    closeOnClickOutside: false
+                                    });
+
+                                    $('#modal_form_vertical_update').modal('hide');
+
+                                    $('.datatable-basic').DataTable().ajax.reload();
+                                }
+
+                                else
+                                {
+                                    swal({
+                                    title: "Error",
+                                    text: response.message,
+                                    type: "error",
+                                    closeOnClickOutside: false
+                                    });
+                                }
+
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                            }
+                        });
+
+					}
+					
+					else 
+					{
+			
+					}
+				});
+    }
+
+    
 
 
 </script>

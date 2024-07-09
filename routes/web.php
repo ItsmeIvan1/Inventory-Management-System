@@ -39,4 +39,13 @@ Route::post('/create-supplier', [SupplierController:: class, 'storeSupplier'])->
 //capture the supplier
 Route::post('/capture-supplier/{id}', [SupplierController:: class, 'captureSupplierInModal'])->name('capture');
 
+//update the supplier
+Route::put('/update-supplier/{id}', [SupplierController:: class, 'updateSupplierInModal'])->name('update');
+
+//update the supplier
+Route::put('/disabled-supplier-status/{id}', [SupplierController:: class, 'disabledSupplier'])->name('disabled-status');
+
+//update the supplier
+Route::put('/retrieved-supplier-status/{id}', [SupplierController:: class, 'retrievedUser'])->name('retrieved-status');
+
 

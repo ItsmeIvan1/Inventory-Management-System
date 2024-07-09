@@ -96,5 +96,89 @@ class SupplierController extends Controller
         return response()->JSON($query);
     }
 
+    public function updateSupplierInModal(Request $request, $supplier_id)
+    {
+
+        $supplierId = $request->input('supplierId');
+        $updatesupplierName = $request->input('updatesupplierName');
+        $updateSupplierAddress = $request->input('updateSupplierAddress');
+        $updateSupplierPhone = $request->input('updateSupplierPhone');
+        $updateSupplierEmail = $request->input('updateSupplierEmail');
+
+        $data = array (
+            'name'          => $updatesupplierName,
+            'address'       => $updateSupplierAddress,
+            'contact_no'    => $updateSupplierPhone,
+            'email'         => $updateSupplierEmail
+        );
+
+
+        $query = DB::table('tbl_suppliers')
+                     ->where('supplier_id', $supplier_id)
+                     ->update($data);
+        
+        if($query)
+        {
+            return response()->JSON([
+                'status'    => 'success',
+                'message'   => 'Successfully updated'
+            ]);
+        }
+
+        else
+        {
+            return response()->JSON([
+                'message'   => 'Something went wrong'
+            ]);
+        }
+
+    
+    }
+
+    public function disabledSupplier($supplier_id)
+    {
+
+        $query = DB::table('tbl_suppliers')
+                 ->where('supplier_id', $supplier_id)
+                 ->update(['status' => 2]);
+        
+        if($query)
+        {
+            return response()->JSON([
+                'status'    => 'success',
+                'message'   => 'Successfully disabled'
+            ]);
+        }
+
+        else
+        {
+            return response()->JSON([
+                'message'   => 'Something went wrong'
+            ]);
+        }
+    }
+
+    public function retrievedUser($supplier_id)
+    {
+        $query = DB::table('tbl_suppliers')
+        ->where('supplier_id', $supplier_id)
+        ->update(['status' => 1]);
+
+        if($query)
+        {
+        return response()->JSON([
+            'status'    => 'success',
+            'message'   => 'Successfully retrieved'
+        ]);
+        }
+
+        else
+        {
+        return response()->JSON([
+            'message'   => 'Something went wrong'
+        ]);
+        }
+    }
+
 
 }
