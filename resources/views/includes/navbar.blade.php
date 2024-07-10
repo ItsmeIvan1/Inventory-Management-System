@@ -87,6 +87,10 @@
                                     <li id="li1">
                                         <a href="{{ route('index_supplier') }}"><i class="icon-truck"></i><span>Supplier</span></a>
                                     </li>
+
+                                    <li id="li2">
+                                        <a href="{{ route('index_product') }}"><i class="icon-box"></i><span>Product</span></a>
+                                    </li>
                                 
                                     <li id="">
                                         <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class=""></i><span>Test</span></a>

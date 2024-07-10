@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupplierController;
-
+use App\Http\Controllers\ProductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,5 +47,11 @@ Route::put('/disabled-supplier-status/{id}', [SupplierController:: class, 'disab
 
 //update the supplier
 Route::put('/retrieved-supplier-status/{id}', [SupplierController:: class, 'retrievedUser'])->name('retrieved-status');
+
+// Supplier
+Route::get('/Product', [ProductController:: class, 'index'])->name('index_product');
+
+//Product insert
+Route::post('/create-product', [ProductController:: class, 'addProduct'])->name('create-product');
 
 
