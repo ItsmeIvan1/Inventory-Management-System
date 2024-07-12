@@ -54,4 +54,10 @@ Route::get('/Product', [ProductController:: class, 'index'])->name('index_produc
 //Product insert
 Route::post('/create-product', [ProductController:: class, 'addProduct'])->name('create-product');
 
+//Product fetch
+Route::post('/capture-product/{id}', [ProductController:: class, 'fetchProduct'])->name('capture-product');
+
+//Product update
+Route::put('/update-product/{id}', [ProductController:: class, 'updateProduct'])->name('updateProduct');
+
 

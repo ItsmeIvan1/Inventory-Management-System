@@ -99,4 +99,59 @@ class ProductController extends Controller
         
  
     }
+
+    public function fetchProduct($product_id)
+    {
+        $query = DB::table('tbl_products')
+                    ->where('product_id', $product_id)
+                    ->first();
+
+        return response()->JSON($query);
+
+    }
+
+    public function updateProduct(Request $request, $product_id)
+    {
+        // $productId = $request->input('productId');
+        $updateProductName = $request->input('updateProductName');
+        $updateProductDescription = $request->input('updateProductDescription');
+        $updateProductUnit = $request->input('updateProductUnit');
+        $updateProductPrice = $request->input('updateProductPrice');
+        $updateProductQuantity = $request->input('updateProductQuantity');
+        $updateProductDetails = $request->input('updateProductDetails');
+        $updateProductSupplierName = $request->input('updateProductSupplierName');
+        $updateProductCategoryName = $request->input('updateProductCategoryName');
+
+        $data = array(
+            'product_name'          => $updateProductName,
+            'product_description'   => $updateProductDescription,
+            'product_unit'          => $updateProductUnit,
+            'product_price'         => $updateProductPrice,
+            'product_quantity'      => $updateProductQuantity,
+            'other_details'         => $updateProductDetails,
+            'supplier_id'           => $updateProductSupplierName,
+            'category_id'           => $updateProductCategoryName
+        );
+
+
+        $query = DB::table('tbl_products')
+                    ->where('product_id', $product_id)
+                    ->update($data);
+        
+        if($query)
+        {
+            return response()->JSON([
+                'status'    => 'success',
+                'message'   => 'Successfully updated'
+            ], 200);
+        }
+
+        else
+        {
+            return response()->JSON([
+                'message'   => 'Something went wrong'
+            ], 500);
+        }
+    }
+
 }
